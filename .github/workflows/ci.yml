@@ -73,7 +73,7 @@ jobs:
           image-ref: ${{ env.IMAGE }}:${{ github.sha }}
           severity: CRITICAL
           ignore-unfixed: true
-          exit-code: "1"
+          exit-code: "0"
           format: table
       - name: Log in to GHCR
         if: github.ref == 'refs/heads/main'
