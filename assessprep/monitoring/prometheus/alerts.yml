@@ -1,0 +1,33 @@
+groups:
+  - name: assessprep
+    rules:
+      - alert: AssessPrepDown
+        expr: up{job="assessprep"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "AssessPrep is down"
+          description: "Prometheus cannot scrape the application for over 1 minute."
+
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m]))
+            / sum(rate(http_server_requests_seconds_count[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "More than 5% of requests are failing"
+          description: "The 5xx ratio has been above 5% for 5 minutes."
+
+      - alert: HighLatencyP95
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le) (rate(http_server_requests_seconds_bucket[5m]))) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p95 latency is above 500 ms"
+          description: "95% of requests have taken longer than 0.5s for 5 minutes."

@@ -1,0 +1,11 @@
+// In your SecurityFilterChain bean, allow the actuator endpoints BEFORE your other rules.
+// Add this import:
+//   import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+//
+// Then inside http.authorizeHttpRequests(auth -> auth ... ):
+//   .requestMatchers(EndpointRequest.to("health", "info", "prometheus")).permitAll()
+//
+// Keep your existing rules (login/register permitAll, everything else authenticated) after it.
+//
+// NOTE: leaving /actuator/prometheus open is fine for a local demo. In a real deployment,
+// serve it on a separate management port or restrict it by network policy.

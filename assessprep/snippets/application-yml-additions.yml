@@ -1,0 +1,16 @@
+# Add at the top level of src/main/resources/application.yml (same level as "spring:" and "app:")
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+    tags:
+      application: assessprep
