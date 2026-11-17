@@ -1,12 +1,12 @@
-# syntax=docker/dockerfile:1
+ # syntax=docker/dockerfile:1
 
 # ---------- Stage 1: build ----------
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /workspace
 # Copy only the POM first so dependency downloads are cached until pom.xml changes
-COPY pom.xml .
+COPY assessprep/pom.xml .
 RUN --mount=type=cache,target=/root/.m2 mvn -B -q dependency:go-offline
-COPY src ./src
+COPY assessprep/src ./src
 RUN --mount=type=cache,target=/root/.m2 mvn -B -q package -DskipTests
 
 # ---------- Stage 2: runtime (JRE only, non-root) ----------
