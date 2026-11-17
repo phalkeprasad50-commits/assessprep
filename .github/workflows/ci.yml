@@ -24,6 +24,9 @@ jobs:
           --health-interval 5s
           --health-timeout 3s
           --health-retries 10
+    defaults:
+      run:
+        working-directory: assessprep/assessprep
     env:
       DB_URL: jdbc:postgresql://localhost:5432/assessprep
       DB_USER: postgres
@@ -35,6 +38,7 @@ jobs:
           distribution: temurin
           java-version: "17"
           cache: maven
+          cache-dependency-path: assessprep/assessprep/pom.xml
       - name: Build and test
         run: mvn -B verify
       - name: Upload test reports
@@ -42,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: surefire-reports
-          path: target/surefire-reports
+          path: assessprep/assessprep/target/surefire-reports
 
   docker:
     needs: build-test
@@ -58,7 +62,7 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./assessprep
           load: true
           tags: ${{ env.IMAGE }}:${{ github.sha }}
           cache-from: type=gha
